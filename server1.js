@@ -3,7 +3,6 @@ import amqp from 'amqplib'
 import express from 'express';
 import http from 'http';
 import SocketIO from 'socket.io';
-import config from './src/config'
 import fs from 'fs';
 
 
