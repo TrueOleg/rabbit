@@ -6,20 +6,21 @@ import express from 'express';
 import http from 'http';
 import SocketIO from 'socket.io';
 import config from './src/config.js'
+import axios from 'axios';
 
 const { uri, workQueue, workQueue1 } = config
-const jobsSocket1 = ioClient.connect('http://localhost:6001');
-const jobsSocket2 = ioClient.connect('http://localhost:6002');
+// const jobsSocket1 = ioClient.connect('http://localhost:6001');
+// const jobsSocket2 = ioClient.connect('http://localhost:6002');
 const app = express();
 
 
-
+const sockets = {};
 const socketServer = http.Server(app);
 
 const IO = new SocketIO(socketServer);
 
-const ports = [jobsSocket1, jobsSocket2];
-const queues = [workQueue, workQueue1];
+const ports = [6001, 6002];
+// const queues = [workQueue, workQueue1];
 const exchange = 'topic_logs';
 
 // amqp.connect('amqp://localhost', function(error0, connection) {
@@ -92,11 +93,14 @@ const startServer = () => {
       console.log(`Error : ${err}`);
       process.exit(-1);
     }
-
-    console.log(`tes is running on 6000`);
+    const res = await axios.get('http://localhost:3000/api/jobs/queues');
+    console.log(`tes is running on 6000`, res.data.queues);
     const conn = await amqp.connect('amqp://localhost');
     // eslint-disable-next-line no-restricted-syntax
-    for (const [index, value] of queues.entries()) {
+    for (const [index, value] of res.data.queues.entries()) {
+      console.log('++++++++++', ports[index]);
+      sockets[value] = ioClient.connect(`http://localhost:${ports[index]}`);
+      console.log('socket', sockets);
       // eslint-disable-next-line no-await-in-loop
       const ch = await conn.createChannel();
       console.log('value', value);
@@ -113,14 +117,17 @@ const startServer = () => {
           return ch.consume(value, function (msg) {
             if (msg !== null) {
               console.log(msg.content.toString());
+
               const myPromise = new Promise((resolve, reject) => {
                 console.log('value', value);
-                IO.emit(value, { message: value })
-                ports[index].on('job-response', (data) => {
+                IO.emit(value, { message: value });
+
+                sockets[value].on('job-response', (data) => {
                   console.log('data', data);
-                  resolve('ssss')
-                })
-              })
+                  sockets[value].removeAllListeners('job-response');
+                  resolve('ssss');
+                });
+              });
               myPromise.then(res => {
                 ch.ack(msg);
               });

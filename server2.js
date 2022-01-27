@@ -20,9 +20,10 @@ const startServer = () => {
       console.log(`Error : ${err}`);
       process.exit(-1);
     }
-    jobsSocket1.on('workQueue1', (data) => {
+    jobsSocket1.on('61f2425768f2cb7edc00cb64', (data) => {
       console.log('data', data);
       fs.readFileSync('./1.png', { encoding: 'utf8', flag: 'r' });
+      console.log('sssss');
       IO.emit('job-response', {message: `${data.message}'s task complete`})
     })
   });

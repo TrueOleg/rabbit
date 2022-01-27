@@ -1,0 +1,41 @@
+{
+  "name": "rabbit-workers-talk",
+  "version": "1.0.0",
+  "description": "Repository created for supporting my talk about 'Rabbit Workers'",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publisher": "babel-node ./src/publisher",
+    "worker": "babel-node ./src/worker",
+    "worker:next": "babel-node ./src/worker/two-consumers.js",
+    "start:test": "npm run publisher oleg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Otavioensa/rabbit-workers-talk.git"
+  },
+  "author": "Otávio Augusto <otavioensa@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Otavioensa/rabbit-workers-talk/issues"
+  },
+  "homepage": "https://github.com/Otavioensa/rabbit-workers-talk#readme",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "axios": "^0.25.0",
+    "bluebird": "^3.5.1",
+    "express": "^4.17.2",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.5.1"
+  }
+}
